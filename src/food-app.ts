@@ -19,7 +19,8 @@ class Foods {
     elements = document.querySelectorAll<HTMLDivElement>('.food');
     //classがfoodのセレクタを全て取得する
     //querySelectorAllがジェネリクスになっているので、htmldivelementであることを指定する
-    private _activeElements: HTMLDivElement[] = []
+    private _activeElements: HTMLDivElement[] = [];
+    private _activeElementsScore: number[] = [];
     //index.htmlのfoodを全て取得しelementsに格納する
     get activeElements() {
         this._activeElements = [];
@@ -30,6 +31,16 @@ class Foods {
             }
         })
         return this._activeElements;
+    }
+    get activeElementsScore() {
+        this._activeElementsScore = [];
+        this.activeElements.forEach(element => {
+            const foodScore = element.querySelector('.food__score');
+            if (foodScore) {
+                this._activeElementsScore.push(Number(foodScore.textContent))
+            }
+        })
+        return this._activeElementsScore;
     }
     constructor() {
         this.elements.forEach(element => {
