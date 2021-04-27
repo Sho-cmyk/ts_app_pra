@@ -1,4 +1,20 @@
-class Score { }
+class Score {
+    private  static instance: Score;
+    get totalScore() {
+        const foods = Foods.getInstance();
+        return foods.activeElementsScore.reduce((total, score) => total + score, 0)
+    }
+    render() {
+        document.querySelector('.score__number')!.textContent = String(this.totalScore);
+    }
+    private constructor() {}
+    static getInstance() {
+        if (!Score.instance) {
+            Score.instance = new Score();
+        }
+        return Score.instance;
+    }
+}
 class Food { 
     constructor(public element: HTMLDivElement) {
         //Foodsクラスのなかのelementに対する特定の処理はFoodクラス内で行いたいので
@@ -10,12 +26,14 @@ class Food {
         //bind(this)が無い場合、thisはelementを指し示す
     }
     clickEventHandler() {
-        console.log(this);
         this.element.classList.toggle('food--active');
         //このelementにfood--activeクラスがあった場合は消す、なかったらつける
+        const score = Score.getInstance();
+        score.render();
     }
 }
 class Foods {
+    private static instance: Foods;
     elements = document.querySelectorAll<HTMLDivElement>('.food');
     //classがfoodのセレクタを全て取得する
     //querySelectorAllがジェネリクスになっているので、htmldivelementであることを指定する
@@ -42,11 +60,17 @@ class Foods {
         })
         return this._activeElementsScore;
     }
-    constructor() {
+    private constructor() {
         this.elements.forEach(element => {
             new Food(element);
         })
     }
+    static getInstance() {
+        if (!Foods.instance) {
+            Foods.instance = new Foods();
+        }
+        return Foods.instance;
+    }
 }
-const foods = new Foods();
+const foods = Foods.getInstance();
 //Foodsクラスのconstructor関数を実行するためにnewでインスタンスを生成する
