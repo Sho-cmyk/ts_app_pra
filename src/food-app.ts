@@ -2,7 +2,17 @@ interface Scoreable {
     readonly totalScore: number;
     render(): void;
 }
-class Score {
+interface Foodable {
+    element: HTMLDivElement;
+    clickEventHandler(): void;
+}
+interface Foodsable {
+    elements: NodeListOf<HTMLDivElement>;
+    readonly activeElements: HTMLDivElement[];
+    readonly activeElementsScore: number[];
+}
+
+class Score implements Scoreable {
     private  static instance: Score;
     get totalScore() {
         const foods = Foods.getInstance();
@@ -21,7 +31,7 @@ class Score {
         return Score.instance;
     }
 }
-class Food { 
+class Food implements Foodable { 
     constructor(public element: HTMLDivElement) {
         //Foodsクラスのなかのelementに対する特定の処理はFoodクラス内で行いたいので
         //constructor関数で行う
@@ -42,7 +52,7 @@ class Food {
         score.render();
     }
 }
-class Foods {
+class Foods implements Foodsable {
     private static instance: Foods;
     //シングルトンパターン
     elements = document.querySelectorAll<HTMLDivElement>('.food');
